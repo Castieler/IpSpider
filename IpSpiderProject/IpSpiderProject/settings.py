@@ -9,7 +9,7 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36
 
 ROBOTSTXT_OBEY = False
 LOG_FILE = 'ip.log'
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 2
 SPIDER_MIDDLEWARES = {
    'IpSpiderProject.middlewares.IpspiderprojectSpiderMiddleware': 543,
 }
@@ -17,10 +17,12 @@ SPIDER_MIDDLEWARES = {
 DOWNLOADER_MIDDLEWARES = {
    'IpSpiderProject.RandomUserAgentMiddleware.RandomUserAgentMiddleware': 543,
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    # 'IpSpiderProject.middlewares.ProxyMiddleware':100,
 }
 
 ITEM_PIPELINES = {
    'IpSpiderProject.pipelines.PyMysqlPipeline': 300,
+'IpSpiderProject.pipelines.IpspiderprojectPipeline': 301,
 }
 
 USER_AGENT_LIST=[

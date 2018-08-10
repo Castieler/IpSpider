@@ -6,10 +6,19 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from .conf import *
 import pymysql
-
+num = 1
 class IpspiderprojectPipeline(object):
+    def __init__(self):
+        self.ft = open('ip.json','a')
+
     def process_item(self, item, spider):
+        self.ft.write(str(dict(item)) + '\n')
+        global num
+        print('已经写入%s条' % str(num))
+        num +=1
         return item
+    def __del__(self):
+        self.ft.close()
 
 
 class PyMysqlPipeline(object):
@@ -24,22 +33,10 @@ class PyMysqlPipeline(object):
                                      cursorclass=pymysql.cursors.DictCursor)
         self.cursor = self.conn.cursor()
 
-
-    def __query(self, sql, param=None):
-
-        try:
-            if param is None:
-                count = self.cursor.execute(sql)
-            else:
-                count = self.cursor.execute(sql, param)
-            self.conn.commit()
-
-        finally:
-            self.conn.close()
-        return count
-
     def insert(self, sql, param=None):
-        return self.__query(sql, param)
+        count = self.cursor.execute(sql, param)
+        self.conn.commit()
+        return count
 
     def process_item(self, item, spider):
         sql = "INSERT INTO ip (id, ip, port,addr,anon,type,sudu,con_time,time_online,validate_time) VALUES(%s, %s,%s, %s,%s, %s,%s, %s,%s, %s)"
@@ -51,8 +48,5 @@ class PyMysqlPipeline(object):
         self.insert(sql,parm)
         return item
 
-# if __name__ == '__main__':
-#     a = PyMysqlPipeline()
-#     sql = "INSERT INTO ip (id, ip, port,addr,anon,type,sudu,con_time,time_online,validate_time) VALUES(%s, %s,%s, %s,%s, %s,%s, %s,%s, %s)"
-#     parm = ('118.190.95.3_5', '118.190.95.35', '9001', '高匿', '广西', 'HTTP', '49天', '18-08-10 14:21', '0.052秒', '0.01秒')
-#     print(a.insert(sql,parm))
+    # def __del__(self):
+    #     self.conn.close()

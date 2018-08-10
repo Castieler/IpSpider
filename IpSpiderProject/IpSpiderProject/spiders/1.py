@@ -14,7 +14,7 @@ class Ip(scrapy.Spider):
             for i in range(1,int(page_num)+1):
                 url = response.url+str(i)
                 yield scrapy.Request(url,callback=self.next)
-
+                # break
 
     def next(self,response):
         tr_list = response.xpath("//tr").extract()
@@ -33,6 +33,5 @@ class Ip(scrapy.Spider):
             this_item['con_time'] = td_list_2[1]
             td_list_3 = html.xpath("//td[@class='country']//text()")
             this_item['anon'] = td_list_3[0]
-            print(dict(this_item))
             yield this_item
-
+            # break
